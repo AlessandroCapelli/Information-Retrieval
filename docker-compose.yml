@@ -1,0 +1,123 @@
+version: '2.2'
+services:
+  elasticsearch_1:
+    build:
+      context: ./elasticsearch
+      dockerfile: Dockerfile_1
+    restart: always
+    container_name: elasticsearch_1
+    environment:
+      - node.name=elasticsearch_1
+      - cluster.name=elasticsearch_cluster
+      - discovery.seed_hosts=elasticsearch_2,elasticsearch_3
+      - cluster.initial_master_nodes=elasticsearch_1,elasticsearch_2,elasticsearch_3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data_elasticsearch_1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - network_elasticsearch
+
+  elasticsearch_2:
+    build:
+      context: ./elasticsearch
+      dockerfile: Dockerfile_2
+    restart: always
+    container_name: elasticsearch_2
+    environment:
+      - node.name=elasticsearch_2
+      - cluster.name=elasticsearch_cluster
+      - discovery.seed_hosts=elasticsearch_1,elasticsearch_3
+      - cluster.initial_master_nodes=elasticsearch_1,elasticsearch_2,elasticsearch_3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data_elasticsearch_2:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9201
+    networks:
+      - network_elasticsearch
+
+  elasticsearch_3:
+    build:
+      context: ./elasticsearch
+      dockerfile: Dockerfile_3
+    restart: always
+    container_name: elasticsearch_3
+    environment:
+      - node.name=elasticsearch_3
+      - cluster.name=elasticsearch_cluster
+      - discovery.seed_hosts=elasticsearch_1,elasticsearch_2
+      - cluster.initial_master_nodes=elasticsearch_1,elasticsearch_2,elasticsearch_3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data_elasticsearch_3:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9202
+    networks:
+      - network_elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.0
+    restart: always
+    container_name: kibana
+    ports:
+      - 5601:5601
+    depends_on:
+    - elasticsearch_1
+    - elasticsearch_2
+    - elasticsearch_3
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch_1:9200"
+      ELASTICSEARCH_HOSTS: "http://elasticsearch_1:9200"
+    networks:
+      - network_elasticsearch
+
+  web:
+    build: ./web
+    restart: always
+    ports:
+      - 5000:5000
+    depends_on: 
+      - elasticsearch_1
+      - elasticsearch_2
+      - elasticsearch_3
+    networks:
+      - network_elasticsearch
+
+  searchengine:
+    build: ./searchengine
+    restart: on-failure
+    depends_on: 
+      - elasticsearch_1
+      - elasticsearch_2
+      - elasticsearch_3
+    networks:
+      - network_elasticsearch
+
+volumes:
+  data_elasticsearch_1:
+    driver: local
+  data_elasticsearch_2:
+    driver: local
+  data_elasticsearch_3:
+    driver: local
+
+networks:
+  network_elasticsearch:
+    driver: bridge
