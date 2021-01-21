@@ -1,0 +1,5 @@
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+
+COPY synonyms.txt /usr/share/elasticsearch/config/analysis/
+
+EXPOSE 9201
