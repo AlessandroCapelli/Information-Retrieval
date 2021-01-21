@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pacifico">
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+  <title>Search Engine</title>
+
+</head>
+<body>
+
+  <div class="container bg-primary">
+    <div style="background:transparent !important" class="jumbotron">
+      <div style="font-family: 'Pacifico', cursive;">
+        <p>
+          <center>
+          <font size="8">Search Engine</font>
+          </center>
+        </p>
+      </div>
+    </div>
+
+    <form action="/search/results" method="post">
+
+        <div class="input-group">
+            <input type="text" class="form-control input-lg" name="input" placeholder="Search" autofocus>
+            <div class="input-group-btn">
+                <button class="btn btn-primary btn-lg" type="submit">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </div>
+        </div>
+        <br>
+        <div class="form-group">
+            <select class="form-control input-lg" name="queryType">
+                <option selected value="match">Exact match</option>
+                <option value="prefix">Prefix match</option>
+                <option value="regexp">Regexp match</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <select class="form-control input-lg" name="fieldSearch">
+                <option selected value="all">All fields (multi-match)</option>
+                <option value="text">Text field</option>
+                <option value="hashtags">Hashtags field</option>
+                <option value="mentions">Mentions field</option>
+                <option value="user_screen_name">User screen name field</option>
+                <option value="user_name">User name field</option>
+                <option value="polarity">Polarity field</option>
+            </select>
+        </div>
+		
+		<div class="form-group">
+            <select class="form-control input-lg" name="User">
+                <option selected value="None">No personalization</option>
+                <option value="All_users">All users personalization</option>
+                <option value="Diplo">Diplo personalization</option>
+				<option value="JustinBieber">Justin Bieber personalization</option>
+				<option value="JBalvin">J Balvin personalization</option>
+				<option value="JoeBiden">Joe Biden personalization</option>
+				<option value="BarackObama">Barack Obama personalization</option>
+				<option value="KamalaHarris">Kamala Harris personalization</option>
+            </select>
+        </div>
+		
+        <div class="form-group">
+            <select class="form-control input-lg" name="size">
+                <option selected value="10">Show 10</option>
+                <option value="50">Show 50</option>
+                <option value="100">Show 100</option>
+                <option value="200">Show 200</option>
+                <option value="500">Show 500</option>
+            </select>
+        </div>
+
+    </form>
+    
+      </div>
+    </div>
+  </body>
+</html>
